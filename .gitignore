@@ -1,0 +1,6 @@
+**/bin/
+**/obj/
+dist/
+.vs/
+/assets/ZIP-Portrait.png
+/src/QuickZip.ico
