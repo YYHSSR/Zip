@@ -1,0 +1,214 @@
+# ZIP 非商业共享许可证 1.0
+
+**ZIP NonCommercial ShareAlike License 1.0（ZNCSL-1.0）**
+
+版权所有 © 2026 YYHSSR  
+项目地址：<https://github.com/YYHSSR/Zip>
+
+> SPDX 标识符：`LicenseRef-ZIP-NC-SA-1.0`  
+> 本许可证不是 OSI 认可的开源许可证。它允许非商业目的的使用、修改与分享，但禁止商业使用，并要求署名和相同方式共享。
+
+---
+
+## 第一条 定义
+
+1.1 **“本作品”** 指 YYHSSR 发布的 ZIP 归档工具及其原创源代码、文档、脚本、界面设计、图标和其他材料，以及作者明确以本许可证发布的后续版本。
+
+1.2 **“作者”** 指本作品的著作权人 YYHSSR，以及经其授权以本许可证发布贡献的贡献者。
+
+1.3 **“二创作品”** 指基于本作品全部或部分内容创作的作品，包括但不限于修改后的源代码、功能增删、界面改版、翻译、移植、素材再创作，以及包含上述内容的二进制程序、安装包和文档。
+
+1.4 **“传播”** 指以出售、赠与、交换、上传、提供下载、分发、转交或其他方式向第三方提供本作品或二创作品。
+
+1.5 **“非商业目的”** 指不以直接或间接获取商业利益、金钱报酬或其他经济利益为目的的使用，具体范围见第六条。
+
+1.6 **“来源标注”** 指按第四条要求注明作者、项目地址、许可证及修改情况。
+
+1.7 **“第三方内容”** 指本作品中使用、调用、打包或附带，但并非 YYHSSR 原创的软件、库、文档、图标或其他材料，包括但不限于 7-Zip 引擎、.NET 运行时和 Microsoft Windows / MSIX 组件。
+
+## 第二条 授权
+
+在遵守本许可证全部条款的前提下，作者授予你一项全球范围、非排他、免费、免版税、不可再许可的著作权许可。你可以：
+
+- **(a)** 以个人使用、学习、研究、非商业评测等非商业目的安装、运行和使用本作品；
+- **(b)** 复制、备份本作品；
+- **(c)** 修改本作品，创作二创作品；
+- **(d)** 以非商业目的传播本作品及二创作品；
+- **(e)** 将本作品及二创作品编译、打包为二进制形式，并以非商业目的传播。
+
+你无需为上述授权支付任何许可费。每位接收者在遵守本许可证的前提下，自动获得同等权利。
+
+本许可证不转让著作权。作者保留所有未明确授予的权利。
+
+## 第三条 非商业限制
+
+3.1 你**不得**将本作品或二创作品用于任何商业目的。
+
+3.2 **“商业目的”** 包括但不限于：
+
+- **(a)** 出售、出租、许可、付费下载、付费订阅、设置付费墙或会员专享，以本作品换取金钱或其他经济利益；
+- **(b)** 将本作品或二创作品捆绑到商业软件、硬件、服务、课程或解决方案中分发；
+- **(c)** 以本作品为基础提供收费的安装、配置、维护、培训、咨询、技术支持或托管服务；
+- **(d)** 在企业、组织或个体工商户的生产经营活动中使用，包括内部部署、商业交付或为客户提供服务；
+- **(e)** 通过广告、赞助、推广、引流、联盟营销等方式直接或间接获利；
+- **(f)** 将本作品或二创作品用于商业产品或服务的功能实现、演示、测试或营销；
+- **(g)** 其他以商业利益或金钱报酬为主要目的或动机的使用。
+
+3.3 下列情形原则上不属于商业目的：个人使用、学习、研究、非商业评测、教学演示，以及非营利组织内部不以营利为目的的使用。但不得向接收者收取超过复制和传输成本的费用，也不得借此进行商业推广。
+
+3.4 作者保留商业授权权利。任何商业使用均须事先获得作者的书面授权，并另行约定授权范围和费用。
+
+3.5 **作者无权就第三方内容授予商业许可。** 即使你获得了作者的书面许可，仍必须自行取得 7-Zip、Microsoft 及其他相关权利人的许可。本许可证不构成任何第三方商业授权。
+
+## 第四条 署名与来源标注
+
+4.1 无论转发原版还是二创作品，你都必须：
+
+- **(a)** 保留本许可证全文，或保留指向本许可证的稳定链接；
+- **(b)** 保留原作者署名、版权声明和项目地址；
+- **(c)** 在仓库首页、发布页、软件“关于”页面或其他显著位置注明来源：**“基于 YYHSSR/ZIP（https://github.com/YYHSSR/Zip）”**。
+
+4.2 转发二创作品时，你还必须：
+
+- **(a)** 明确标注该作品为“修改版”或“基于原项目修改”；
+- **(b)** 简要说明修改内容和修改日期；
+- **(c)** 不得删除、隐藏或伪造原作者署名、版权标识和许可证信息；
+- **(d)** 若以二进制程序、安装包或其他不易查看源代码的形式传播，应在软件“关于”页面、安装界面、随附文档或 `NOTICE` 文件中提供上述信息及本许可证全文或链接。
+
+4.3 推荐使用以下署名格式：
+
+```text
+本项目基于 YYHSSR/ZIP（https://github.com/YYHSSR/Zip）修改。
+原项目采用 ZIP 非商业共享许可证 1.0（ZNCSL-1.0）。
+修改内容：……
+修改日期：……
+```
+
+4.4 你不得以任何方式暗示作者对你或你的二创作品提供背书、认证或支持。
+
+## 第五条 相同方式共享
+
+5.1 二创作品必须继续采用本许可证 1.0，或采用作者书面认可的、与本许可证限制一致的兼容许可证。
+
+5.2 你不得对二创作品施加额外的法律条款或技术限制，以限制他人行使本许可证授予的权利。
+
+5.3 以二进制形式传播二创作品时，你应在显著位置提供对应源代码的获取方式（例如公开仓库链接）；未公开源代码的，应在文档中说明修改内容，并提供足以审阅修改部分的源代码。
+
+5.4 本许可证不要求你公开未向外传播的私人修改。
+
+## 第六条 名称、图标与商标
+
+6.1 本许可证仅授予著作权许可，不授予商标、商号、服务标记、域名、作者姓名或肖像的许可。
+
+6.2 传播二创作品时，应使用与原项目可区分的名称和图标，并清楚标示其为修改版。为说明来源而使用“ZIP”“YYHSSR”等字样属于合理指示，但不得造成官方版本或作者背书的误认。
+
+6.3 7-Zip、Igor Pavlov、Microsoft、Windows 等名称和商标归其各自权利人所有。本作品与上述权利人无隶属、合作或背书关系。
+
+## 第七条 第三方内容
+
+7.1 本作品使用或附带第三方内容，包括但不限于：
+
+- **7-Zip 引擎**（`7z.exe`、`7z.dll` 及相关文件）：按其随附 `License.txt` 中的 GNU LGPL、BSD 和 unRAR 条款使用；
+- **.NET 10**：按 MIT License 使用；
+- **Microsoft Windows / MSIX 组件**：按 Microsoft 的适用条款使用。
+
+7.2 第三方内容仍归其各自权利人所有，并继续适用其原有协议。本许可证**不替代、不修改、不豁免、不撤销**任何第三方协议，也不对第三方内容重新授权。
+
+7.3 本许可证与第三方协议发生冲突时，就第三方内容以第三方协议为准；使用和分发本作品必须同时满足所有适用协议。
+
+7.4 随发布包提供的 7-Zip `License.txt` 应随附保留，不得删除或替换为与本作品无关的许可文本。
+
+## 第八条 贡献者条款
+
+8.1 本作品的贡献者包括：
+
+- **YYHSSR**：作者与维护者；
+- **Claude（Anthropic）**：AI 开发协作；
+- **ChatGPT / Codex（OpenAI）**：AI 开发协作。
+
+8.2 向本作品提交贡献（包括 Pull Request、patch、代码、文档、测试、素材、问题反馈等），即表示你确认并同意：
+
+- **(a)** 你有权提交该贡献，且该贡献不侵犯任何第三方的著作权、商标权、专利权或其他权利；
+- **(b)** 你的贡献按本许可证 1.0 发布，你授予作者及所有接收者一项非商业、全球、免费、免版税、非排他的许可，允许其使用、修改和传播你的贡献；
+- **(c)** 你的贡献同时受所有适用的第三方协议约束；
+- **(d)** 你同意在提交记录、README、CONTRIBUTORS 或等效位置被署名。
+
+8.3 你保留你所提交贡献的著作权。作者不因收录你的贡献而取得你的著作权，但有权按本许可证分发包含该贡献的本作品。
+
+8.4 AI 协作工具仅作为开发协助被致谢，**不作为著作权主体**。其参与产出的内容由作者整理、审阅并发布；作者对最终发布内容负责。
+
+8.5 贡献者名单可随项目更新。名单本身不构成对任何贡献者或第三方公司的官方背书。
+
+## 第九条 免责声明
+
+9.1 本作品按**“现状”**和**“现有”**提供，不附带任何明示或暗示的担保，包括但不限于适销性、特定用途适用性、合法性、不侵权、无病毒、无错误或不间断运行的担保。
+
+9.2 本作品会读取、创建、修改、解压或删除归档文件及其中内容，可能导致文件覆盖、数据丢失、压缩包损坏或其他损失。你应在操作前备份重要数据，并自行承担全部风险。
+
+9.3 本作品不是 7-Zip、Microsoft 或任何第三方公司的官方产品，也未获得其认可或背书。
+
+9.4 在适用法律允许的最大范围内，作者与贡献者不对因使用或无法使用本作品而产生的任何直接、间接、附带、特殊、惩罚性或后果性损害承担责任，包括但不限于利润损失、数据丢失、设备损坏、业务中断或第三方索赔。
+
+9.5 若适用法律不允许上述全部或部分限制，则相应限制在最小必要范围内不适用，本许可证的其他条款继续有效。
+
+## 第十条 终止
+
+10.1 你违反本许可证任何条款时，本许可证授予你的权利立即终止。
+
+10.2 终止后，你应立即停止使用、复制、修改和传播，并删除或销毁你持有或控制的本作品及二创作品副本，法律要求保留的除外。
+
+10.3 若属首次违约，且你在收到作者书面通知后 30 日内完全纠正违约行为并停止相关使用或传播，作者可书面恢复你的授权；恢复不溯及既往。
+
+10.4 第三条、第四条、第五条、第六条、第七条、第八条、第九条和第十一条在终止后继续有效。
+
+## 第十一条 其他
+
+11.1 本许可证是双方关于本作品的完整许可约定，取代此前就同一主题作出的口头或书面说明。
+
+11.2 作者未行使或延迟行使本许可证下的任何权利，不构成对该权利的放弃。
+
+11.3 本许可证任一条款被认定无效或不可执行，不影响其余条款的效力；应以最接近原条款目的的有效条款替代。
+
+11.4 本许可证的中文版本为正式版本。英文摘要仅为方便理解，不构成正式条款；中英文如有不一致，以中文为准。
+
+11.5 本许可证不构成法律意见，也不建立律师与客户关系。
+
+11.6 本许可证版本 1.0，发布于 2026 年 11 月 22 日。
+
+11.7 本许可证自发布之日起适用于本作品的当前及后续版本。
+
+---
+
+## English Summary (non-binding)
+
+ZIP is a Windows archive tool by YYHSSR. This license covers only YYHSSR's original code, documentation, scripts, assets, and other original content. It does **not** relicense 7-Zip, .NET, Microsoft Windows/MSIX components, or any other third-party content.
+
+You may, for **non-commercial purposes only**:
+
+- use, copy, and share the original work;
+- modify it and create derivative works;
+- distribute original or modified versions, including binaries.
+
+You must:
+
+- keep the copyright notice and this license;
+- give clear credit to **YYHSSR** and link to <https://github.com/YYHSSR/Zip>;
+- mark modified versions and describe the changes and date;
+- license derivative works under ZNCSL-1.0, or a compatible license approved in writing by the author;
+- make the corresponding source available when distributing binaries;
+- keep all third-party notices, including the bundled 7-Zip `License.txt`;
+- comply with all applicable third-party licenses;
+- not imply endorsement by the author.
+
+You may not:
+
+- sell, rent, license, paywall, bundle, or otherwise use the work for commercial advantage;
+- provide paid services based on it;
+- use it in business operations or commercial products or services;
+- remove attribution or add restrictions.
+
+The work is provided **“as is”**, without warranty of any kind. Archive operations can overwrite or delete files; back up your data and use the tool at your own risk.
+
+Contributors agree to license their contributions under these terms. AI tools are credited as development assistants only and are not copyright holders.
+
+For commercial licensing of YYHSSR's original content, contact the author via GitHub. Commercial use of third-party components requires separate permission from their respective rights holders.
