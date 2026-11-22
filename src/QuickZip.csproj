@@ -9,7 +9,7 @@
     <AssemblyName>ZIP</AssemblyName>
     <ApplicationIcon>ZIP.ico</ApplicationIcon>
     <Product>ZIP</Product>
-    <Version>0.4.1</Version>
+    <Version>0.4.2</Version>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
   </PropertyGroup>
 </Project>

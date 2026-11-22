@@ -709,8 +709,7 @@ internal sealed class MainForm : Form
         var candidate = new ArchiveSession(path);
         string? secret = null;
         var result = Program.WithPassword<ArchiveContents>(this, "打开压缩包", null,
-            async (attempt, _, progress, token) => new ArchiveContents(
-                await ArchiveEngine.ListAsync(candidate, null, attempt, progress, token), token),
+            (attempt, _, progress, token) => ArchiveEngine.ReadContentsAsync(candidate, null, attempt, progress, token),
             accepted => secret = accepted);
         if (result.Cancelled || result.Error is not null)
         {
@@ -746,8 +745,7 @@ internal sealed class MainForm : Form
             return;
         ArchiveSession session = archive;
         var result = JobDialog.Execute(this, "重新读取文件列表",
-            async (_, progress, token) => new ArchiveContents(
-                await ArchiveEngine.ListAsync(session, choice.CodePage, password, progress, token), token));
+            (_, progress, token) => ArchiveEngine.ReadContentsAsync(session, choice.CodePage, password, progress, token));
         if (!result.Cancelled && result.Error is null)
         {
             codePage = choice.CodePage;
@@ -1056,17 +1054,18 @@ internal sealed class MainForm : Form
     private EditOptions Options(string? secret) => new(codePage, secret, namesEncrypted);
 
     /// <summary>Runs one change against the open archive with the inline progress bar, then reloads the listing.</summary>
-    private async Task<bool> ModifyAsync(Func<ArchiveSession, EditOptions, IProgress<JobProgress>, CancellationToken, Task> change)
+    private async Task<bool> ModifyAsync(
+        Func<ArchiveSession, EditOptions, IProgress<JobProgress>, CancellationToken, Task> change, bool writesFiles = false)
     {
-        if (jobStatus.IsRunning || archive is not { } session || !writable)
+        if (jobStatus.IsRunning || archive is not { } session || contents is not { } viewed || !writable)
             return false;
         var result = await Program.WithPasswordAsync<bool>(this, password, secret =>
         {
+            var options = Options(secret);
             var running = jobStatus.RunAsync(async (progress, token) =>
             {
-                progress.Report(new("正在准备编辑…"));
-                await ArchiveEngine.EditTransactionAsync(session,
-                    stagedArchive => change(stagedArchive, Options(secret), progress, token), token);
+                await ArchiveEngine.EditTransactionAsync(session, viewed, options, writesFiles,
+                    stagedArchive => change(stagedArchive, options, progress, token), progress, token);
                 return true;
             });
             UpdateButtons();
@@ -1084,8 +1083,8 @@ internal sealed class MainForm : Form
     private async Task ReloadAsync(ArchiveSession session)
     {
         string folder = currentFolder?.Path ?? "";
-        var result = await jobStatus.RunAsync(async (progress, token) => new ArchiveContents(
-            await ArchiveEngine.ListAsync(session, codePage, password, progress, token), token));
+        var result = await jobStatus.RunAsync((progress, token) =>
+            ArchiveEngine.ReadContentsAsync(session, codePage, password, progress, token));
         UpdateButtons();
         if (result.Error is not null)
             JobDialog.ShowError(this, result.Error);
@@ -1107,7 +1106,7 @@ internal sealed class MainForm : Form
             foreach (var group in changed.GroupBy(entry => entry.StageRoot, StringComparer.OrdinalIgnoreCase))
                 await ArchiveEngine.AddAsync(working, group.Key, group.Select(entry => entry.RelativePath).ToArray(),
                     options, progress, token);
-        });
+        }, writesFiles: true);
         if (done)
         {
             count.IsLink = false;
@@ -1164,7 +1163,7 @@ internal sealed class MainForm : Form
                 return;
         }
         if (await ModifyAsync((working, options, progress, token) => ArchiveEngine.AddFromDiskAsync(working, sources,
-                folder.Path, rootNames, folderNames, options, progress, token)))
+                folder.Path, rootNames, folderNames, options, progress, token), writesFiles: true))
         {
             count.IsLink = false;
             count.Text = $"✓ 已添加 {sources.Length} 个项目";

@@ -46,15 +46,21 @@ internal sealed class ArchiveContents
     public ArchiveFolder Root { get; } = new("", null);
     public int TotalEntries { get; }
     public long TotalSize { get; }
+    public bool HasEncryptedFiles { get; }
+    public ArchiveRevision Revision { get; }
 
-    public ArchiveContents(IReadOnlyList<ArchiveItem> items, CancellationToken token)
+    public ArchiveContents(IReadOnlyList<ArchiveItem> items, ArchiveRevision revision, CancellationToken token)
     {
+        Revision = revision;
         TotalEntries = items.Count;
         foreach (ArchiveItem item in items)
         {
             token.ThrowIfCancellationRequested();
             if (!item.Directory)
+            {
                 TotalSize += item.Size ?? 0;
+                HasEncryptedFiles |= item.Encrypted;
+            }
             string[] components = item.Path.Split(['\\', '/'], StringSplitOptions.RemoveEmptyEntries);
             int first = 0;
             while (first < components.Length && components[first] == ".")

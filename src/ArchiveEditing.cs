@@ -22,26 +22,38 @@ internal static partial class ArchiveEngine
         CanModify(session) ? WritableTypes[Path.GetExtension(session.OriginalPath)]
             : throw new ArchiveException("这种格式的压缩包不支持直接修改。可以先解压，再重新压缩。");
 
-    public static async Task EditTransactionAsync(ArchiveSession session,
-        Func<ArchiveSession, Task> edit, CancellationToken token)
+    public static async Task EditTransactionAsync(ArchiveSession session, ArchiveContents contents, EditOptions options,
+        bool writesFiles, Func<ArchiveSession, Task> edit, IProgress<JobProgress> progress, CancellationToken token)
     {
         string original = session.OriginalPath;
-        var before = new FileInfo(original);
-        long size = before.Length;
-        DateTime modified = before.LastWriteTimeUtc;
+        token.ThrowIfCancellationRequested();
+        contents.Revision.RequireCurrent(original);
+        bool verifyPassword = writesFiles && (contents.HasEncryptedFiles || options.EncryptNames);
+        if (verifyPassword && string.IsNullOrEmpty(options.Password))
+            throw new ArchiveException("写入加密压缩包前，请输入原压缩包密码。", needsPassword: true);
         using var stage = TempDirectory.NextToOutput(Path.GetDirectoryName(original)!);
         using var working = new ArchiveSession(Path.Combine(stage.Path, Path.GetFileName(original)));
-        token.ThrowIfCancellationRequested();
-        await using (var input = File.OpenRead(original))
-        await using (var output = File.Create(working.OriginalPath))
-            await input.CopyToAsync(output, token);
+        await using (var input = new FileStream(original, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete,
+            128 * 1024, FileOptions.Asynchronous | FileOptions.SequentialScan))
+        {
+            contents.Revision.RequireMatch(ArchiveRevision.Read(input.SafeFileHandle));
+            if (verifyPassword)
+            {
+                await TestAsync(session, options.CodePage, options.Password, progress, token);
+                contents.Revision.RequireCurrent(original);
+            }
 
-        await edit(working);
+            progress.Report(new("正在准备编辑…"));
+            await using (var output = new FileStream(working.OriginalPath, FileMode.CreateNew, FileAccess.Write, FileShare.None,
+                128 * 1024, FileOptions.Asynchronous | FileOptions.SequentialScan))
+                await input.CopyToAsync(output, token);
+
+            await edit(working);
+            contents.Revision.RequireCurrent(original);
+            CopyZone(original, working.OriginalPath);
+        }
         token.ThrowIfCancellationRequested();
-        before.Refresh();
-        if (!before.Exists || before.Length != size || before.LastWriteTimeUtc != modified)
-            throw new ArchiveException("压缩包已被其他程序修改，请重新打开后再试。");
-        CopyZone(original, working.OriginalPath);
+        contents.Revision.RequireCurrent(original);
         File.Move(working.OriginalPath, original, overwrite: true);
     }
 

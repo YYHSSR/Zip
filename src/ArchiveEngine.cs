@@ -60,6 +60,7 @@ internal sealed class ArchiveSession(string originalPath) : IDisposable
 {
     private TempDirectory? expanded;
     private string? innerPath;
+    private ArchiveRevision innerRevision;
 
     public string OriginalPath { get; } = Path.GetFullPath(originalPath);
 
@@ -72,7 +73,8 @@ internal sealed class ArchiveSession(string originalPath) : IDisposable
     {
         if (!IsCompressedTar)
             return OriginalPath;
-        if (innerPath is not null)
+        ArchiveRevision revision = ArchiveRevision.Read(OriginalPath);
+        if (innerPath is not null && revision == innerRevision)
             return innerPath;
 
         progress.Report(new("正在解开 TAR 的压缩层…"));
@@ -80,7 +82,10 @@ internal sealed class ArchiveSession(string originalPath) : IDisposable
         string path = Path.Combine(candidate.Path, ArchiveFormat.BaseName(OriginalPath) + ".tar");
         await ArchiveEngine.UnwrapAsync(OriginalPath, path, token);
         ArchiveEngine.CopyZone(OriginalPath, path);
+        revision.RequireCurrent(OriginalPath);
+        expanded?.Dispose();
         innerPath = path;
+        innerRevision = revision;
         expanded = candidate.Transfer();
         return innerPath;
     }
@@ -134,6 +139,16 @@ internal static partial class ArchiveEngine
     [GeneratedRegex(@"^\s*(\d{1,3})%")]
     private static partial Regex ProgressLine();
 
+    public static async Task<ArchiveContents> ReadContentsAsync(ArchiveSession session, int? codePage,
+        string? password, IProgress<JobProgress> progress, CancellationToken token)
+    {
+        ArchiveRevision revision = ArchiveRevision.Read(session.OriginalPath);
+        var items = await ListAsync(session, codePage, password, progress, token);
+        var contents = new ArchiveContents(items, revision, token);
+        revision.RequireCurrent(session.OriginalPath);
+        return contents;
+    }
+
     public static async Task<IReadOnlyList<ArchiveItem>> ListAsync(ArchiveSession session, int? codePage,
         string? password, IProgress<JobProgress> progress, CancellationToken token)
     {
@@ -142,21 +157,20 @@ internal static partial class ArchiveEngine
         var items = new List<ArchiveItem>();
         bool inEntries = false;
         string? type = null;
-        var properties = new Dictionary<string, string>(StringComparer.Ordinal);
+        string? name = null;
+        string modified = "";
+        long? size = null;
+        bool directory = false, encrypted = false, hasSize = false;
         void FinishEntry()
         {
-            string? name = properties.GetValueOrDefault("Path");
-            if (string.IsNullOrEmpty(name) && properties.ContainsKey("Size") && type is not null && SingleStreams.Contains(type))
+            if (string.IsNullOrEmpty(name) && hasSize && type is not null && SingleStreams.Contains(type))
                 name = ArchiveFormat.BaseName(path);
             if (name is not null)
-            {
-                string attributes = properties.GetValueOrDefault("Attributes", "");
-                bool dir = properties.GetValueOrDefault("Folder") == "+" || attributes.StartsWith('D');
-                long? size = long.TryParse(properties.GetValueOrDefault("Size"), out long value) ? value : null;
-                items.Add(new(name, dir, size, properties.GetValueOrDefault("Modified", ""),
-                    properties.GetValueOrDefault("Encrypted") == "+"));
-            }
-            properties.Clear();
+                items.Add(new(name, directory, size, modified, encrypted));
+            name = null;
+            modified = "";
+            size = null;
+            directory = encrypted = hasSize = false;
         }
 
         await RunAsync(["l", "-slt", "-bsp0", .. ReadOptions(codePage, password), "--", path],
@@ -175,8 +189,21 @@ internal static partial class ArchiveEngine
                     return;
                 }
                 int equals = line.IndexOf(" = ", StringComparison.Ordinal);
-                if (equals > 0)
-                    properties[line[..equals]] = line[(equals + 3)..];
+                if (equals <= 0)
+                    return;
+                ReadOnlySpan<char> value = line.AsSpan(equals + 3);
+                switch (line.AsSpan(0, equals))
+                {
+                    case "Path": name = value.ToString(); break;
+                    case "Modified": modified = value.ToString(); break;
+                    case "Size":
+                        hasSize = true;
+                        size = long.TryParse(value, out long parsed) ? parsed : null;
+                        break;
+                    case "Folder": directory |= value is "+"; break;
+                    case "Attributes": directory |= value.Length > 0 && value[0] == 'D'; break;
+                    case "Encrypted": encrypted = value is "+"; break;
+                }
             });
         FinishEntry();
         return items;
@@ -500,6 +527,7 @@ internal static partial class ArchiveEngine
             using StreamReader output = process.StandardOutput;
             char[] buffer = new char[4096];
             var line = new StringBuilder();
+            bool previousWasCarriageReturn = false;
             while (true)
             {
                 int read = await output.ReadAsync(buffer.AsMemory(), token);
@@ -510,12 +538,13 @@ internal static partial class ArchiveEngine
                     char ch = buffer[index];
                     if (ch is '\r' or '\n' or '\b')
                     {
-                        if (ch != '\n' || index == 0 || buffer[index - 1] != '\r')
+                        if (ch != '\n' || !previousWasCarriageReturn)
                             RecordLine(line.ToString());
                         line.Clear();
                     }
                     else
                         line.Append(ch);
+                    previousWasCarriageReturn = ch == '\r';
                 }
             }
             if (line.Length > 0)
